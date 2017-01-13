@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CommonViews</string>
+    <string name="what_s_your_name">What\'s your name?</string>
+    <string name="level_of_dog_brain">Level of dog brain</string>
+</resources>
