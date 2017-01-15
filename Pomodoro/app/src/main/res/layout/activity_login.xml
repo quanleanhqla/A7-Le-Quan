@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context="com.example.quanla.pomodoro.activities.LoginActivity">
 
     <EditText
@@ -38,5 +39,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_setting"
+        android:text="Setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
