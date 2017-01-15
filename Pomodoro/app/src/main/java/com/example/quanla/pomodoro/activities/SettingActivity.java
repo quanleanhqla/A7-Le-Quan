@@ -17,10 +17,6 @@ public class SettingActivity extends AppCompatActivity {
     private static final int DEFAULT_TIMEBREAK = 5;
     private static final int DEFAULT_TIMELONGBREAK = 30;
 
-    private int worktime;
-    private int timebreak;
-    private int timelongbreak;
-
     private SeekBar sbWorktime;
     private SeekBar sbTimebreak;
     private SeekBar sbTimelongbreak;
@@ -29,7 +25,6 @@ public class SettingActivity extends AppCompatActivity {
     private TextView txtTimebreak;
     private TextView txtTimelongbreak;
 
-    private Button btnSave;
     private Button btnDefault;
 
     @Override
@@ -52,7 +47,7 @@ public class SettingActivity extends AppCompatActivity {
         txtTimebreak = (TextView) this.findViewById(R.id.txt_timebreak);
         txtTimelongbreak = (TextView) this.findViewById(R.id.txt_timelongbreak);
 
-        btnSave = (Button) this.findViewById(R.id.btn_saveSetting);
+
         btnDefault = (Button) this.findViewById(R.id.btn_default);
     }
 
@@ -70,7 +65,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                worktime = sbWorktime.getProgress();
+                SharedPrefs.getInstance().putSetting(new SettingDetail(sbWorktime.getProgress(), sbTimebreak.getProgress(), sbTimelongbreak.getProgress()));
             }
         });
 
@@ -87,7 +82,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                timebreak = sbTimebreak.getProgress();
+                SharedPrefs.getInstance().putSetting(new SettingDetail(sbWorktime.getProgress(), sbTimebreak.getProgress(), sbTimelongbreak.getProgress()));
             }
         });
 
@@ -104,15 +99,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                timelongbreak = sbTimelongbreak.getProgress();
-            }
-        });
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPrefs.getInstance().putSetting(new SettingDetail(worktime, timebreak, timelongbreak));
-                Toast.makeText(SettingActivity.this, "Saved change !", Toast.LENGTH_SHORT).show();
+                SharedPrefs.getInstance().putSetting(new SettingDetail(sbWorktime.getProgress(), sbTimebreak.getProgress(), sbTimelongbreak.getProgress()));
             }
         });
 
