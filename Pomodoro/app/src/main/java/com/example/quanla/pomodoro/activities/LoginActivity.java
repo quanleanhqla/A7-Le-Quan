@@ -22,7 +22,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button btLogin;
     private Button btRegister;
-    private Button btSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = (EditText) this.findViewById(R.id.et_password);
         btLogin = (Button) this.findViewById(R.id.bt_login);
         btRegister = (Button) this.findViewById(R.id.bt_register);
-        btSetting = (Button) this.findViewById(R.id.btn_setting);
 
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,12 +48,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoSettingActivity();
-            }
-        });
 
         SharedPrefs sharedPrefs = new SharedPrefs(this);
         sharedPrefs.put(new LoginCredentials("hieu", "xxx"));
@@ -93,10 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         else Toast.makeText(this, R.string.loginfail, Toast.LENGTH_SHORT).show();
     }
 
-    private void gotoSettingActivity(){
-        Intent intent = new Intent(this, SettingActivity.class);
-        startActivity(intent);
-    }
 
     private void gotoMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);

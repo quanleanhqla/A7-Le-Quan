@@ -1,5 +1,6 @@
 package com.example.quanla.pomodoro.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            gotoSettingActivity();
             return true;
         }
 
@@ -99,5 +101,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void gotoSettingActivity(){
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
     }
 }
