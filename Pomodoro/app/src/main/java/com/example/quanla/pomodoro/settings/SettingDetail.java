@@ -8,11 +8,13 @@ public class SettingDetail {
     private int worktime;
     private int timebreak;
     private int timelongbreak;
+    private int position;
 
-    public SettingDetail(int worktime, int timebreak, int timelongbreak) {
+    public SettingDetail(int worktime, int timebreak, int timelongbreak, int position) {
         this.timebreak = timebreak;
         this.timelongbreak = timelongbreak;
         this.worktime = worktime;
+        this.position = position;
     }
 
 
@@ -28,11 +30,14 @@ public class SettingDetail {
         return worktime;
     }
 
+    public int getPosition() { return position; }
+
     @Override
     public String toString() {
         return "SettingDetail{" +
-                "timebreak=" + timebreak +
+                "position=" + position +
                 ", worktime=" + worktime +
+                ", timebreak=" + timebreak +
                 ", timelongbreak=" + timelongbreak +
                 '}';
     }
