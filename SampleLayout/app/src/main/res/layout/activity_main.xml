@@ -83,18 +83,18 @@
 
         <View
             android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
+            android:layout_alignTop="@id/body"
             android:layout_toLeftOf="@id/body"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="100dp"
             android:background="@color/color3" />
 
         <View
             android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"
+            android:layout_alignTop="@id/body"
             android:layout_toRightOf="@id/body"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="100dp"
             android:background="@color/color3" />
 
         <View
@@ -112,7 +112,32 @@
             android:layout_width="50dp"
             android:layout_height="100dp"
             android:background="@color/color4" />
+
+
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:background="@color/color3"/>
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:background="@color/color4"/>
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:background="@color/color5"/>
+    </LinearLayout>
 
 
 
