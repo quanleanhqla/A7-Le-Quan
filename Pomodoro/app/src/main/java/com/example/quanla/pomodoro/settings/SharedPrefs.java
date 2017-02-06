@@ -61,5 +61,12 @@ public class SharedPrefs {
         return loginCredentials;
     }
 
+    public String getAccessToken(){
+        LoginCredentials loginCred = getLoginCredentials();
+        if(loginCred!=null){
+            return loginCred.getAccessToken();
+        }
+        return null;
+    }
 
 }
