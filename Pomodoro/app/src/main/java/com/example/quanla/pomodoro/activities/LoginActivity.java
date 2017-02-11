@@ -1,6 +1,8 @@
 package com.example.quanla.pomodoro.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +43,11 @@ public class LoginActivity extends AppCompatActivity {
     private Button btRegister;
     private Retrofit retrofit;
 
+    private ProgressDialog progressDialog;
+
+    private TextInputLayout tilUsername;
+    private TextInputLayout tilPassword;
+
     private String username;
     private String password;
     private String token;
@@ -55,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = (EditText) this.findViewById(R.id.et_password);
         btLogin = (Button) this.findViewById(R.id.bt_login);
         btRegister = (Button) this.findViewById(R.id.bt_register);
+
+        tilUsername = (TextInputLayout) this.findViewById(R.id.text_input_username);
+        tilPassword = (TextInputLayout) this.findViewById(R.id.text_input_password);
 
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,19 +188,48 @@ public class LoginActivity extends AppCompatActivity {
         SharedPrefs.getInstance().put(new LoginCredentials(username, password, token));
         Toast.makeText(this, R.string.loginsuccess, Toast.LENGTH_SHORT).show();
         gotoMainActivity();
+        progressDialog.dismiss();
     }
 
 
     private void tryRegister() {
+        int checkun = 0;
+
+        int checkpw = 0;
         username = etUsername.getText().toString();
         password = etPassword.getText().toString();
-        sendRegister(username, password);
+        if(username.length()<5) checkun = 1;
+
+        for(int i=0; i<username.length(); i++){
+            char temp = username.charAt(i);
+            if(temp<'0'||(temp>'9'&&temp<'A')||(temp>'Z'&&temp<'a')||temp>'z'){
+                checkun = 2;
+            }
+        }
+        if(password.length()<5){
+            checkpw = 1;
+        }
+        for(int i = 0; i< password.length(); i++){
+            char temp = password.charAt(i);
+            if(temp<'0'||(temp>'9'&&temp<'A')||(temp>'Z'&&temp<'a')||temp>'z'){
+                checkpw = 2;
+            }
+        }
+
+        if(checkpw==0 && checkun==0) sendRegister(username, password);
+        else{
+            if(checkun==1) tilUsername.setError("Username must have at least 5 characters");
+            else tilUsername.setError("Letters and numbers are permitted");
+            if(checkpw==1) tilPassword.setError("Password must have at least 5 characters");
+            else tilPassword.setError("Letters and numbers are permitted");
+        }
     }
 
     private void attempLogin() {
         username = etUsername.getText().toString();
         password = etPassword.getText().toString();
         sendLogin(username, password);
+        progressDialog = ProgressDialog.show(this, null, "authenticating...", true);
     }
 
 

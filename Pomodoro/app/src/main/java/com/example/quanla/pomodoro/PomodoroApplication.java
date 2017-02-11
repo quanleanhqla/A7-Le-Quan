@@ -3,6 +3,8 @@ package com.example.quanla.pomodoro;
 import android.app.Application;
 import android.util.Log;
 
+import com.example.quanla.pomodoro.databases.DbContext;
+import com.example.quanla.pomodoro.databases.models.Task;
 import com.example.quanla.pomodoro.settings.SharedPrefs;
 
 /**
@@ -16,5 +18,9 @@ public class PomodoroApplication extends Application {
         super.onCreate();
         Log.d(TAG, "onCreate: ");
         SharedPrefs.init(this);
+
+        for(Task task : DbContext.instance.allTasks()){
+            Log.d(TAG, String.format("onCreate: %s", task));
+        }
     }
 }

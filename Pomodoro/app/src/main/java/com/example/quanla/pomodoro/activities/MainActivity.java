@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,12 +15,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.quanla.pomodoro.R;
+import com.example.quanla.pomodoro.adapters.TaskAdapter;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    @BindView(R.id.rv_task)
+    RecyclerView rvTask;
+
+    @BindView(R.id.btn_color)
+    Button btnColor;
+
+
+
+    private TaskAdapter taskAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +60,24 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setupUI();
+
+        btnColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoColorActivity();
+            }
+        });
+
+
+    }
+
+    private void setupUI() {
+        ButterKnife.bind(this);
+        taskAdapter = new TaskAdapter();
+        rvTask.setAdapter(taskAdapter);
+        rvTask.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -106,4 +141,11 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
+
+    private void gotoColorActivity(){
+        Intent intent = new Intent(this, ColorActivity.class);
+        startActivity(intent);
+    }
+
+
 }
