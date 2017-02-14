@@ -25,7 +25,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SettingActivity" />
-        <activity android:name=".activities.ColorActivity"></activity>
     </application>
 
 </manifest>

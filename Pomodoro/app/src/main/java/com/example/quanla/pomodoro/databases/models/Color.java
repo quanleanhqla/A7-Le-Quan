@@ -5,25 +5,35 @@ package com.example.quanla.pomodoro.databases.models;
  */
 
 public class Color {
-    private String color;
+    private int color;
+    private boolean isCheck;
 
-    public Color(String color) {
+    public Color(int color, boolean isCheck) {
         this.color = color;
-
+        this.isCheck = isCheck;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 
     @Override
     public String toString() {
         return "Color{" +
                 "color='" + color + '\'' +
+                ", isCheck=" + isCheck +
                 '}';
     }
 }
