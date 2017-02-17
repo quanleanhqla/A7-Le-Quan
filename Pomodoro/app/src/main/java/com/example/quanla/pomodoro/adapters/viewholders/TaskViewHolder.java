@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.quanla.pomodoro.R;
@@ -22,6 +23,12 @@ public class TaskViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.tv_task_name)
     TextView tvTaskName;
+
+    @BindView(R.id.iv_check)
+    ImageView ivCheck;
+
+    @BindView(R.id.iv_play)
+    ImageView ivPlay;
     public TaskViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -35,5 +42,17 @@ public class TaskViewHolder extends RecyclerView.ViewHolder {
 
         //2: Bind Task name
         tvTaskName.setText(task.getName());
+    }
+
+    public View getvTaskColor() {
+        return vTaskColor;
+    }
+
+    public ImageView getIvCheck() {
+        return ivCheck;
+    }
+
+    public ImageView getIvPlay(){
+        return ivPlay;
     }
 }

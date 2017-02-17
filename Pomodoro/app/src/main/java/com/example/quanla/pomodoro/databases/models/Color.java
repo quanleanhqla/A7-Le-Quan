@@ -5,19 +5,19 @@ package com.example.quanla.pomodoro.databases.models;
  */
 
 public class Color {
-    private int color;
+    private String color;
     private boolean isCheck;
 
-    public Color(int color, boolean isCheck) {
+    public Color(String color, boolean isCheck) {
         this.color = color;
         this.isCheck = isCheck;
     }
 
-    public int getColor() {
+    public String getColorString() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColorString(String color) {
         this.color = color;
     }
 
@@ -36,4 +36,14 @@ public class Color {
                 ", isCheck=" + isCheck +
                 '}';
     }
+
+    public static String[] COLORS = new String[]{
+            "#0091EA",
+            "#00C853",
+            "#FFD600",
+            "#DD2C00",
+            "#AA00FF",
+            "#757575",
+            "#F50057"
+    };
 }

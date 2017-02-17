@@ -1,5 +1,6 @@
 package com.example.quanla.pomodoro.databases;
 
+import com.example.quanla.pomodoro.databases.models.Color;
 import com.example.quanla.pomodoro.databases.models.Task;
 
 import java.util.ArrayList;
@@ -14,17 +15,25 @@ import java.util.List;
 public class DbContext {
     public final static DbContext instance = new DbContext();
 
+    private ArrayList<Task> tasks;
+
     public List<Task> allTasks(){
         //1: Create arry list
-        ArrayList<Task> tasks = new ArrayList<>();
+        if(tasks==null) {
+            tasks = new ArrayList<>();
 
-        //2: add some tasks and return
-        tasks.add(new Task("Study recycle view", "#C62828"));
-        tasks.add(new Task("Practice recycle view", "#AD1457"));
-        tasks.add(new Task("Study recycle view", "#6A1B9A"));
-        tasks.add(new Task("Study recycle view", "#BBDEFB"));
-        tasks.add(new Task("Study recycle view", "#7C4DFF"));
+            //2: add some tasks and return
+            tasks.add(new Task("Study recycle view", Color.COLORS[0], 10.2f));
+            tasks.add(new Task("Practice recycle view", Color.COLORS[1], 20.3f));
+            tasks.add(new Task("Study recycle view", Color.COLORS[2], 3.2f));
+            tasks.add(new Task("Study recycle view", Color.COLORS[3], 9.7f));
+            tasks.add(new Task("Study recycle view", Color.COLORS[4], 5.5f));
+        }
 
         return tasks;
+    }
+
+    public void addTask(Task newTask) {
+        tasks.add(newTask);
     }
 }

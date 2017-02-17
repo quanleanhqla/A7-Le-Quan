@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_color"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <ImageView
-        android:id="@+id/imColor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/shape_task_color"/>
+    <View
+        android:id="@+id/v_task_color"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/shape_task_color"/>
 
 
     <ImageView
-        android:id="@+id/ib_check"
+        android:id="@+id/iv_check"
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:srcCompat="@drawable/ic_check"/>
 
 
-</FrameLayout>
+</RelativeLayout>
