@@ -1,0 +1,42 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.quanla.pomodoro.fragments.TimerFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textSize="40sp"
+            android:layout_centerInParent="true"
+            />
+
+        <Button
+            android:visibility="gone"
+            android:text="Stop"
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_timer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            />
+
+        <Button
+            android:id="@+id/btn_start"
+            android:text="Start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_timer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"/>
+    </RelativeLayout>
+
+
+</FrameLayout>
