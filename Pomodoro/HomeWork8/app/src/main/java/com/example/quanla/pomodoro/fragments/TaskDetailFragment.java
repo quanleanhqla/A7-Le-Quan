@@ -13,30 +13,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.quanla.pomodoro.R;
 import com.example.quanla.pomodoro.activities.MainActivity;
 import com.example.quanla.pomodoro.adapters.ColorAdapter;
-import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
 import com.example.quanla.pomodoro.decorations.TaskColorDecoration;
-import com.example.quanla.pomodoro.fragments.optionItemStrategies.DoneAddTask;
 import com.example.quanla.pomodoro.fragments.optionItemStrategies.SaveEditTask;
 import com.example.quanla.pomodoro.fragments.optionItemStrategies.Strategy;
+import com.example.quanla.pomodoro.networks.jsonmodels.AddTaskBodyJson;
 import com.example.quanla.pomodoro.networks.services.AddNewTaskService;
+import com.example.quanla.pomodoro.settings.SharedPrefs;
 import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
 
 
 /**
@@ -123,14 +126,17 @@ public class TaskDetailFragment extends Fragment {
 
             if(TaskFragment.viewClick==0){
                 strategy = new SaveEditTask();
+                strategy.doOptionItem(task, taskName, paymentPerHour, color);
             }
             else {
-                strategy = new DoneAddTask();
-                addNewTask(taskName, color, paymentPerHour);
+                Task newTask = new Task(taskName, color, paymentPerHour);
+                addNewTask(newTask);
+                Log.d(TAG, newTask.getName());
 
             }
 
-            strategy.doOptionItem(task, taskName, paymentPerHour, color);
+
+
 
 
             getActivity().onBackPressed();
@@ -140,11 +146,30 @@ public class TaskDetailFragment extends Fragment {
         return false;
     }
 
-    public void addNewTask(String name, String color, float payment){
+    public void addNewTask(Task task){
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+
+                Request request = original.newBuilder()
+                        .header("Authorization","JWT " + SharedPrefs.getInstance().getAccessToken())
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
+
+        OkHttpClient client = httpClient.build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://a-task.herokuapp.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
+
         AddNewTaskService addNewTaskService = retrofit.create(AddNewTaskService.class);
 
         //data & format
@@ -152,10 +177,10 @@ public class TaskDetailFragment extends Fragment {
         //date => json
 
         MediaType jsonType = MediaType.parse("application/json");
-        String addNewTaskJson = (new Gson()).toJson(new Task(name, color, payment));
-        RequestBody addNewBody = RequestBody.create(jsonType, addNewTaskJson);
+        String addNewTaskJson = (new Gson()).toJson(new AddTaskBodyJson(task.getColor(), false, null, null, null, task.getName(), task.getPayment()));
+        RequestBody requestBody = RequestBody.create(jsonType, addNewTaskJson);
 
-        addNewTaskService.addTask(addNewBody).enqueue(new Callback<Task>() {
+        addNewTaskService.addTask(requestBody).enqueue(new Callback<Task>() {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
                 Log.d(TAG, String.format("abc: %s", response.body()) );

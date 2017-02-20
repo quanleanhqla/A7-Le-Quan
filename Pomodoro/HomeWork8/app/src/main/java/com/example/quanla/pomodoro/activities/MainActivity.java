@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //setupUI();
+
         TaskFragment taskFragment = new TaskFragment();
         replaceFragment(taskFragment, false);
         taskFragment.setListener(this);
@@ -116,7 +117,11 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
+
+
         ButterKnife.bind(this);
+
+
 
 
 
@@ -199,6 +204,8 @@ public class MainActivity extends AppCompatActivity
                    .commit();
        }
    }
+
+
 
 
 

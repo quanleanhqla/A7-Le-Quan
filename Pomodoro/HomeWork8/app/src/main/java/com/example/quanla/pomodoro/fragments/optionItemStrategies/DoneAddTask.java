@@ -18,7 +18,5 @@ public class DoneAddTask implements Strategy {
     public void doOptionItem(Task task, String taskName, float payment, String color) {
         task = new Task(taskName, color, payment);
 
-        //addToDataBase
-        DbContext.instance.addTask(task);
     }
 }

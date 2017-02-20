@@ -196,53 +196,7 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginSuccess(){
         SharedPrefs.getInstance().put(new LoginCredentials(username, password, token));
         Toast.makeText(this, R.string.loginsuccess, Toast.LENGTH_SHORT).show();
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-
-                Request request = original.newBuilder()
-                        .header("Authorization", "JWT " +SharedPrefs.getInstance().getAccessToken())
-                        .method(original.method(), original.body())
-                        .build();
-
-                return chain.proceed(request);
-            }
-        });
-
-        OkHttpClient client = httpClient.build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://a-task.herokuapp.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        GetTaskService getTaskService = retrofit.create(GetTaskService.class);
-
-        getTaskService.getAllTask().enqueue(new Callback<List<Task>>() {
-            @Override
-            public void onResponse(Call<List<Task>> call, retrofit2.Response<List<Task>> response) {
-                List<Task> tasks = response.body();
-                if(tasks==null) {
-                    Log.d(TAG, "fail");
-                    Log.d(TAG, "abc:"+SharedPrefs.getInstance().getAccessToken());
-                }
-                else {
-                    for (Task task : tasks) {
-                        Log.d(TAG, String.format("onResponse: %s", task));
-                        if(task.getColor()!=null) DbContext.instance.addTask(task);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Task>> call, Throwable t) {
-
-            }
-        });
+        getAllTask();
         gotoMainActivity();
         progressDialog.dismiss();
     }
@@ -294,4 +248,55 @@ public class LoginActivity extends AppCompatActivity {
         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+
+    private void getAllTask(){
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+
+                Request request = original.newBuilder()
+                        .header("Authorization", "JWT " + SharedPrefs.getInstance().getAccessToken())
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
+
+        OkHttpClient client = httpClient.build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://a-task.herokuapp.com/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        GetTaskService getTaskService = retrofit.create(GetTaskService.class);
+
+        getTaskService.getAllTask().enqueue(new Callback<List<Task>>() {
+            @Override
+            public void onResponse(Call<List<Task>> call, retrofit2.Response<List<Task>> response) {
+                List<Task> tasks = response.body();
+                if(tasks==null) {
+                    Log.d(TAG, "fail");
+                    Log.d(TAG, "abc:"+SharedPrefs.getInstance().getAccessToken());
+                }
+                else {
+                    for (Task task : tasks) {
+                        Log.d(TAG, String.format("onResponse: %s", task));
+                        if(task.getColor()!=null) DbContext.instance.addTask(task);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Task>> call, Throwable t) {
+
+            }
+        });
+    }
+
 }
