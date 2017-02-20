@@ -284,6 +284,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "abc:"+SharedPrefs.getInstance().getAccessToken());
                 }
                 else {
+                    DbContext.instance.delete();
                     for (Task task : tasks) {
                         Log.d(TAG, String.format("onResponse: %s", task));
                         if(task.getColor()!=null) DbContext.instance.addTask(task);

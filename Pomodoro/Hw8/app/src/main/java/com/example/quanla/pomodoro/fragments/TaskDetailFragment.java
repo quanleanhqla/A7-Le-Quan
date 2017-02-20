@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.example.quanla.pomodoro.R;
 import com.example.quanla.pomodoro.activities.MainActivity;
 import com.example.quanla.pomodoro.adapters.ColorAdapter;
+import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
 import com.example.quanla.pomodoro.decorations.TaskColorDecoration;
 import com.example.quanla.pomodoro.fragments.optionItemStrategies.SaveEditTask;
@@ -132,6 +133,7 @@ public class TaskDetailFragment extends Fragment {
                 Task newTask = new Task(taskName, color, paymentPerHour);
                 addNewTask(newTask);
                 Log.d(TAG, newTask.getName());
+                DbContext.instance.addTask(newTask);
 
             }
 

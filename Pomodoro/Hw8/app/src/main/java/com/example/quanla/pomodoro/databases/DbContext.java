@@ -28,6 +28,10 @@ public class DbContext {
         return tasks;
     }
 
+    public void delete(){
+        tasks = new ArrayList<>();
+    }
+
     public void addTask(Task newTask) {
         tasks.add(newTask);
     }
