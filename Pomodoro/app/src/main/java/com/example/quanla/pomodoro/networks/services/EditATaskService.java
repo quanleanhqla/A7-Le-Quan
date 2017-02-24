@@ -18,9 +18,10 @@ public interface EditATaskService {
     @FormUrlEncoded
     @PUT("task/{localID}")
     Call<Task> editATask(@Path("localID") String localID,
-                         @Field("name") String name,
-                         @Field("color") String color,
-                         @Field("payment_per_hour") float payment);
+                         @Field("name") String newName,
+                         @Field("color") String newColor,
+                         @Field("payment_per_hour") float newPayment,
+                         @Field("local_id") String newLocalID);
     @DELETE("task/{localID}")
     Call<Task> deleteATask(@Path("localID") String localID);
 }

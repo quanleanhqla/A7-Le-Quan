@@ -49,7 +49,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TaskFragment extends Fragment {
+public class TaskFragment extends Fragment{
 
     private final static String TAG = "abc";
 
@@ -69,9 +69,6 @@ public class TaskFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public TaskAdapter getTaskAdapter() {
-        return taskAdapter;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -114,8 +111,7 @@ public class TaskFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteTask(task);
-                        DbContext.instance.deleteATask(task);
-                        taskAdapter.notifyDataSetChanged();
+
                     }
                 });
                 deleteAD.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -176,6 +172,8 @@ public class TaskFragment extends Fragment {
             public void onResponse(Call<Task> call, Response<Task> response) {
                 if(response.body()!=null){
                     Log.d(TAG, String.format("OMG %s", response.body()));
+                    getAllTask();
+                    taskAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -253,6 +251,7 @@ public class TaskFragment extends Fragment {
             }
         });
     }
+
 
 
 }

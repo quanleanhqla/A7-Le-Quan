@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.example.quanla.pomodoro.R;
@@ -26,10 +27,12 @@ import com.example.quanla.pomodoro.networks.NetContext;
 import com.example.quanla.pomodoro.networks.jsonmodels.AddTaskBodyJson;
 import com.example.quanla.pomodoro.networks.services.AddNewTaskService;
 import com.example.quanla.pomodoro.networks.services.EditATaskService;
+import com.example.quanla.pomodoro.networks.services.GetTaskService;
 import com.example.quanla.pomodoro.settings.SharedPrefs;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -45,11 +48,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class TaskDetailFragment extends Fragment {
+
+
     String uuid;
 
     private static final String TAG = "abc";
@@ -134,14 +141,19 @@ public class TaskDetailFragment extends Fragment {
                 strategy.doOptionItem(task, taskName, paymentPerHour, color);
 
                 editATask(task, taskName, color, paymentPerHour);
+
+
             }
             else {
                 Task newTask = new Task(color, uuid, taskName, paymentPerHour);
                 addNewTask(newTask);
 
+
+
             }
-
-
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                    INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
 
 
@@ -190,8 +202,7 @@ public class TaskDetailFragment extends Fragment {
         addNewTaskService.addTask(requestBody).enqueue(new Callback<Task>() {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
-                Log.d(TAG, String.format("abc: %s", response.body()));
-                DbContext.instance.addTask(response.body());
+                Log.d(TAG, String.format("Add: %s", response.body()));
 
             }
 
@@ -205,12 +216,13 @@ public class TaskDetailFragment extends Fragment {
     public void editATask(Task task, String name, String color, float payment){
         EditATaskService editATaskService = NetContext.instance.create(EditATaskService.class);
 
-        editATaskService.editATask(task.getIdLocal(), name, color, payment).enqueue(new Callback<Task>() {
+        editATaskService.editATask(task.getIdLocal(), name, color, payment, task.getIdLocal()).enqueue(new Callback<Task>() {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
                 if(response.body()!=null){
-                    Log.d(TAG, String.format("update: &s", response.body()) );
+                    Log.d(TAG, String.format("update: %s", response.body()) );
                 }
+                else Log.d(TAG, "chua edit duoc");
             }
 
             @Override
@@ -221,4 +233,6 @@ public class TaskDetailFragment extends Fragment {
 
 
     }
+
+
 }
