@@ -1,6 +1,7 @@
 package com.example.quanla.pomodoro.fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -47,6 +48,8 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
  * A simple {@link Fragment} subclass.
  */
 public class TaskDetailFragment extends Fragment {
+    private ProgressDialog progressDialogAdd;
+    private ProgressDialog progressDialogEdit;
 
 
     String uuid;
@@ -121,7 +124,6 @@ public class TaskDetailFragment extends Fragment {
     String color;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(((MainActivity)getActivity()).isOnline()){
             if (item.getItemId() == R.id.m_ok) {
 
                 //get data from UI
@@ -132,13 +134,8 @@ public class TaskDetailFragment extends Fragment {
                 if (TaskFragment.viewClick == 0) {
                     editATask(task, taskName, color, paymentPerHour);
 
-
-                    DbContext.instance.update(task, taskName, color, paymentPerHour);
-
-
                 } else {
                     Task newTask = new Task(taskName, color, paymentPerHour);
-                    DbContext.instance.add(newTask);
                     addNewTask(newTask);
                 }
 
@@ -148,24 +145,13 @@ public class TaskDetailFragment extends Fragment {
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
 
-                getActivity().onBackPressed();
-
 
             }
-        }
-        else {
-            if(TaskFragment.viewClick == 0){
-                DbContext.instance.update(task, taskName, color, paymentPerHour);
-            }
-            else {
-                Task newTask = new Task(taskName, color, paymentPerHour);
-                DbContext.instance.add(newTask);
-            }
-        }
         return false;
     }
 
-    public void addNewTask(Task task){
+    public void addNewTask(final Task task){
+        progressDialogAdd = ProgressDialog.show(this.getContext(), null, "Adding new task to server", true);
 
         TaskService addNewTaskService = NetContext.instance.create(TaskService.class);
 
@@ -181,17 +167,22 @@ public class TaskDetailFragment extends Fragment {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
                 Log.d(TAG, String.format("Add: %s", response.body()));
+                DbContext.instance.add(task);
+                progressDialogAdd.dismiss();
+                getActivity().onBackPressed();
 
             }
 
             @Override
             public void onFailure(Call<Task> call, Throwable t) {
-
+                progressDialogAdd.dismiss();
+                Toast.makeText(getActivity(), "Cannot add data to server. Try again", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void editATask(Task task, String name, String color, float payment){
+    public void editATask(final Task task, final String name, final String color, final float payment){
+        progressDialogEdit = ProgressDialog.show(this.getContext(), null, "Editting task on server", true);
         TaskService editATaskService = NetContext.instance.create(TaskService.class);
 
         editATaskService.editATask(task.getIdLocal(), name, color, payment, task.getIdLocal()).enqueue(new Callback<Task>() {
@@ -200,13 +191,20 @@ public class TaskDetailFragment extends Fragment {
 
                 if(response.body()!=null){
                     Log.d(TAG, String.format("update: %s", response.body()) );
+                    DbContext.instance.update(task, name, color, payment);
+                    progressDialogEdit.dismiss();
+                    getActivity().onBackPressed();
                 }
-                else Log.d(TAG, "chua edit duoc");
+                else{
+                    Log.d(TAG, "chua edit duoc");
+                    progressDialogEdit.dismiss();
+                }
             }
 
             @Override
             public void onFailure(Call<Task> call, Throwable t) {
-
+                progressDialogEdit.dismiss();
+                Toast.makeText(getActivity(), "Cannot edit data on server. Try again", Toast.LENGTH_SHORT).show();
             }
         });
 

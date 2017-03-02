@@ -1,6 +1,7 @@
 package com.example.quanla.pomodoro.fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,6 +40,8 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class TaskFragment extends Fragment{
+    private ProgressDialog progressDialogGet;
+    private ProgressDialog progressDialogDel;
 
     private final static String TAG = "abc";
 
@@ -65,10 +68,11 @@ public class TaskFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_task, container, false);
+        getAllTask();
+        setupUI(view);
         for(Task task: DbContext.instance.allTasks()){
             Log.d(TAG, String.format("Ra: %s", task.toString()));
         }
-        setupUI(view);
 
         return view;
 
@@ -104,7 +108,6 @@ public class TaskFragment extends Fragment{
                     public void onClick(DialogInterface dialog, int which) {
                         if(((MainActivity)getActivity()).isOnline()) {
                             deleteTask(task);
-                            DbContext.instance.delete(task);
                             taskAdapter.notifyDataSetChanged();
 
                         }
@@ -161,19 +164,60 @@ public class TaskFragment extends Fragment{
 
     }
 
-    private void deleteTask(Task task) {
+    private void getAllTask(){
+        progressDialogGet = ProgressDialog.show(this.getContext(), null, "Getting tasks from server", true);
+
+        TaskService getTaskService = NetContext.instance.create(TaskService.class);
+
+        getTaskService.getAllTask().enqueue(new Callback<List<Task>>() {
+            @Override
+            public void onResponse(Call<List<Task>> call, retrofit2.Response<List<Task>> response) {
+
+                List<Task> tasks = response.body();
+
+                if(tasks!=null) {
+                    for (Task task : tasks) {
+                        Log.d(TAG, String.format("onResponse: %s", task));
+                        if(task.getIdLocal()!=null) DbContext.instance.addOrUpdate(new Task(task.getName(), task.getColor(), task.getPayment(), task.getIdLocal()));
+                    }
+                    progressDialogGet.dismiss();
+
+                }
+                else {
+                    Toast.makeText(getActivity(), "No jobs", Toast.LENGTH_SHORT).show();progressDialogGet.dismiss();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Task>> call, Throwable t) {
+                progressDialogGet.dismiss();
+                Toast.makeText(getActivity(), "Cannot get tasks from server", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+
+    private void deleteTask(final Task task) {
+        progressDialogDel = ProgressDialog.show(this.getContext(), null, "Deleting task", true);
         TaskService deleteTask = NetContext.instance.create(TaskService.class);
 
         deleteTask.deleteATask(task.getIdLocal()).enqueue(new Callback<Task>() {
             @Override
             public void onResponse(Call<Task> call, Response<Task> response) {
                 if(response.body()!=null){
-                    Log.d(TAG, String.format("OMG %s", response.body()));
+                    DbContext.instance.delete(task);
+                    Log.d(TAG, String.format("Delete %s", response.body()));
+                    taskAdapter.notifyDataSetChanged();
+                    progressDialogDel.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<Task> call, Throwable t) {
+                progressDialogDel.dismiss();
+                Toast.makeText(getActivity(), "Cannot delete this task", Toast.LENGTH_SHORT).show();
 
             }
         });

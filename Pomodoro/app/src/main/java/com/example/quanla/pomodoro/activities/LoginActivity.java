@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        skipLoginIfPossible();
+        //skipLoginIfPossible();
         setContentView(R.layout.activity_login);
 
         etUsername = (EditText) this.findViewById(R.id.et_username);
@@ -180,6 +180,7 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginSuccess(){
         SharedPrefs.getInstance().put(new LoginCredentials(username, password, token));
         Toast.makeText(this, R.string.loginsuccess, Toast.LENGTH_SHORT).show();
+        DbContext.instance.clearAll();
         gotoMainActivity();
         progressDialog.dismiss();
     }
@@ -228,7 +229,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void gotoMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

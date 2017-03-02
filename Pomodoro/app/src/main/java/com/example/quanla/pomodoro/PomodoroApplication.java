@@ -32,9 +32,6 @@ public class PomodoroApplication extends Application {
 
         DbContext.instance.InitialRealm(this);
 
-        if(isOnline()) DbContext.instance.clearAll();
-
-        getAllTask();
 
 
 //        for(Task task : DbContext.instance.allTasks()){
@@ -42,41 +39,7 @@ public class PomodoroApplication extends Application {
 //        }
     }
 
-    private void getAllTask(){
 
-
-        TaskService getTaskService = NetContext.instance.create(TaskService.class);
-
-        getTaskService.getAllTask().enqueue(new Callback<List<Task>>() {
-            @Override
-            public void onResponse(Call<List<Task>> call, retrofit2.Response<List<Task>> response) {
-
-                List<Task> tasks = response.body();
-                if(tasks.toString().equals("[]")) {
-                    DbContext.instance.clearAll();
-                    Log.d(TAG, String.format("fail %s", response.body()));
-                }
-                else if(tasks==null){
-                    DbContext.instance.clearAll();
-                    Log.d(TAG, "Shit");
-                }
-                else {
-                    for (Task task : tasks) {
-                        Log.d(TAG, String.format("onResponse: %s", task));
-                        if(task.getIdLocal()!=null) DbContext.instance.addOrUpdate(new Task(task.getName(), task.getColor(), task.getPayment(), task.getIdLocal()));
-
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Task>> call, Throwable t) {
-
-            }
-        });
-    }
 
     public Boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
