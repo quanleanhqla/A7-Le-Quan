@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SettingActivity" />
+        <service android:name=".services.PomodoroService" android:exported="false"/>
     </application>
 
 </manifest>

@@ -1,0 +1,52 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.quanla.pomodoro.fragments.TimerFragment">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.example.quanla.pomodoro.LSquareLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/squareLayout">
+            <com.github.lzyzsd.circleprogress.DonutProgress
+                android:id="@+id/dp_timer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:donut_progress="0"
+                app:donut_max="100"
+                android:layout_centerHorizontal="true" />
+        </com.example.quanla.pomodoro.LSquareLayout>
+
+
+        <Button
+            android:layout_toRightOf="@id/squareLayout"
+            android:layout_alignParentTop="true"
+            android:visibility="gone"
+            android:text="Stop"
+            android:id="@+id/btn_resume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            />
+
+        <Button
+            android:layout_toRightOf="@id/squareLayout"
+            android:layout_alignParentTop="true"
+            android:id="@+id/btn_pause"
+            android:text="Start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            />
+    </RelativeLayout>
+    <!-- TODO: Update blank fragment layout -->
+
+
+
+</FrameLayout>

@@ -23,9 +23,13 @@ import com.example.quanla.pomodoro.activities.MainActivity;
 import com.example.quanla.pomodoro.adapters.TaskAdapter;
 import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
+import com.example.quanla.pomodoro.events.TimerCommand;
+import com.example.quanla.pomodoro.events.TimerCommandEvent;
 import com.example.quanla.pomodoro.networks.NetContext;
 import com.example.quanla.pomodoro.networks.services.TaskService;
 import com.example.quanla.pomodoro.settings.SharedPrefs;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -153,6 +157,8 @@ public class TaskFragment extends Fragment{
             public void onIconClickListener(View v) {
                 TimerFragment timerFragment = new TimerFragment();
                 ((MainActivity)getActivity()).replaceFragment(timerFragment, true);
+                TimerCommandEvent event = new TimerCommandEvent(TimerCommand.START_TIMER);
+                EventBus.getDefault().post(event);
 
             }
         });

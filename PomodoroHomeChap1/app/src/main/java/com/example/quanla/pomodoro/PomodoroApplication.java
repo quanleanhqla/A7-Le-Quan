@@ -2,6 +2,7 @@ package com.example.quanla.pomodoro;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -11,6 +12,7 @@ import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
 import com.example.quanla.pomodoro.networks.NetContext;
 import com.example.quanla.pomodoro.networks.services.TaskService;
+import com.example.quanla.pomodoro.services.PomodoroService;
 import com.example.quanla.pomodoro.settings.SharedPrefs;
 
 import java.util.List;
@@ -28,7 +30,10 @@ public class PomodoroApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: ");
+        Intent intent = new Intent(this, PomodoroService.class);
+        startService(intent);
         SharedPrefs.init(this);
+
 
         DbContext.instance.InitialRealm(this);
 
