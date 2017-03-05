@@ -1,0 +1,50 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.quanla.pomodoro.fragments.TimerFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.example.quanla.pomodoro.PSquareLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/squareLayout">
+            <com.github.lzyzsd.circleprogress.DonutProgress
+                android:id="@+id/dp_timer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:donut_progress="0"
+                app:donut_max="100"
+                android:layout_centerHorizontal="true" />
+        </com.example.quanla.pomodoro.PSquareLayout>
+
+
+
+        <Button
+            android:layout_below="@id/squareLayout"
+            android:visibility="gone"
+            android:text="Resume"
+            android:id="@+id/btn_resume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            />
+
+        <Button
+            android:layout_below="@id/squareLayout"
+            android:id="@+id/btn_pause"
+            android:text="Pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"/>
+    </RelativeLayout>
+
+
+</FrameLayout>
