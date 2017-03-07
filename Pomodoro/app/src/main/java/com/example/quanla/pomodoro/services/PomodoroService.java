@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
  */
 
 public class PomodoroService extends Service {
-    private long total = 10000;
+    private long total = 11000;
     private long resumeMilis;
     private CountDownTimer countDownTimer;
     private static final String TAG = "abc";
@@ -67,8 +67,6 @@ public class PomodoroService extends Service {
 
             @Override
             public void onFinish() {
-                event.setMili(0);
-                EventBus.getDefault().post(event);
             }
 
         }.start();

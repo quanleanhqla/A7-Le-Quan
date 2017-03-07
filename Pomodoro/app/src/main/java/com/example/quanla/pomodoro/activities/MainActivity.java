@@ -24,9 +24,13 @@ import com.example.quanla.pomodoro.R;
 
 import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
+import com.example.quanla.pomodoro.events.FragmentReplaceEvent;
 import com.example.quanla.pomodoro.fragments.FragmentReplaceListener;
 
 import com.example.quanla.pomodoro.fragments.TaskFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindDrawable;
 
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 
         TaskFragment taskFragment = new TaskFragment();
         replaceFragment(taskFragment, false);
-        taskFragment.setListener(this);
+        EventBus.getDefault().register(this);
 
 //        btnColor.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -120,10 +124,10 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-    
-    
-
-
+    @Subscribe
+    public void replaceFragment(FragmentReplaceEvent fragmentReplaceEvent){
+        replaceFragment(fragmentReplaceEvent.getFragment(), fragmentReplaceEvent.isAddToBackStack());
+    }
 
     @Override
     public void onBackPressed() {
@@ -217,6 +221,9 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
 }

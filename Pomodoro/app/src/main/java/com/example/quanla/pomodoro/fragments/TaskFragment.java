@@ -23,6 +23,9 @@ import com.example.quanla.pomodoro.activities.MainActivity;
 import com.example.quanla.pomodoro.adapters.TaskAdapter;
 import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
+import com.example.quanla.pomodoro.events.FragmentReplaceEvent;
+import com.example.quanla.pomodoro.events.TaskClick;
+import com.example.quanla.pomodoro.events.TaskClickEvent;
 import com.example.quanla.pomodoro.events.TimerCommand;
 import com.example.quanla.pomodoro.events.TimerCommandEvent;
 import com.example.quanla.pomodoro.networks.NetContext;
@@ -30,6 +33,7 @@ import com.example.quanla.pomodoro.networks.services.TaskService;
 import com.example.quanla.pomodoro.settings.SharedPrefs;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -77,6 +81,7 @@ public class TaskFragment extends Fragment{
         for(Task task: DbContext.instance.allTasks()){
             Log.d(TAG, String.format("Ra: %s", task.toString()));
         }
+        EventBus.getDefault().register(this);
 
         return view;
 
@@ -102,72 +107,125 @@ public class TaskFragment extends Fragment{
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL);
         rvTask.addItemDecoration(dividerItemDecoration);
 
-        taskAdapter.setTaskItemLongClickListener(new TaskAdapter.TaskItemLongClickListener() {
-            @Override
-            public void onItemLongClick(final Task task) {
-                final AlertDialog.Builder deleteAD = new AlertDialog.Builder(getActivity());
-                deleteAD.setMessage("Delete this task?");
-                deleteAD.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(((MainActivity)getActivity()).isOnline()) {
-                            deleteTask(task);
-                            taskAdapter.notifyDataSetChanged();
+//        taskAdapter.setTaskItemLongClickListener(new TaskAdapter.TaskItemLongClickListener() {
+//            @Override
+//            public void onItemLongClick(final Task task) {
+//                final AlertDialog.Builder deleteAD = new AlertDialog.Builder(getActivity());
+//                deleteAD.setMessage("Delete this task?");
+//                deleteAD.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        if(((MainActivity)getActivity()).isOnline()) {
+//                            deleteTask(task);
+//                            taskAdapter.notifyDataSetChanged();
+//
+//                        }
+//                    }
+//
+//                });
+//                deleteAD.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        deleteAD.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                            @Override
+//                            public void onDismiss(DialogInterface dialog) {
+//                                getActivity().onBackPressed();
+//                            }
+//                        });
+//                    }
+//                });
+//                deleteAD.show();
+//
+//            }
+//        });
 
-                        }
-                    }
-
-                });
-                deleteAD.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteAD.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                getActivity().onBackPressed();
-                            }
-                        });
-                    }
-                });
-                deleteAD.show();
-
-            }
-        });
-
-        taskAdapter.setTaskItemClickListener(new TaskAdapter.TaskItemClickListener() {
-            @Override
-            public void onItemClick(Task task) {
-
-                TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
-                taskDetailFragment.setTitle("Edit task");
-
-                taskDetailFragment.setTask(task);
-
-                //TODO: Make TaskActivity and Fragment independent
-                ((MainActivity)getActivity()).replaceFragment(taskDetailFragment, true);
-
-                viewClick = 0;
-
-            }
-        });
+//        taskAdapter.setTaskItemClickListener(new TaskAdapter.TaskItemClickListener() {
+//            @Override
+//            public void onItemClick(Task task) {
+//
+//                TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
+//                taskDetailFragment.setTitle("Edit task");
+//
+//                taskDetailFragment.setTask(task);
+//
+//                //TODO: Make TaskActivity and Fragment independent
+//                ((MainActivity)getActivity()).replaceFragment(taskDetailFragment, true);
+//
+//                viewClick = 0;
+//
+//            }
+//        });
 
 
-        taskAdapter.setIconClickListener(new TaskAdapter.IconClickListener() {
-            @Override
-            public void onIconClickListener(View v) {
-                TimerFragment timerFragment = new TimerFragment();
-                ((MainActivity)getActivity()).replaceFragment(timerFragment, true);
-                TimerCommandEvent event = new TimerCommandEvent(TimerCommand.START_TIMER);
-                EventBus.getDefault().post(event);
+//        taskAdapter.setIconClickListener(new TaskAdapter.IconClickListener() {
+//            @Override
+//            public void onIconClickListener(View v) {
+//                TimerFragment timerFragment = new TimerFragment();
+//                ((MainActivity)getActivity()).replaceFragment(timerFragment, true);
+//                TimerCommandEvent event = new TimerCommandEvent(TimerCommand.START_TIMER);
+//                EventBus.getDefault().post(event);
+//
+//            }
+//        });
 
-            }
-        });
+
+
 
 
         setHasOptionsMenu(true);
 
 
 
+    }
+
+    @Subscribe
+    public void onPlayClick(final TaskClickEvent taskClickEvent){
+        if(taskClickEvent.getTaskClick()== TaskClick.PLAY_TIMER){
+            TimerFragment timerFragment = new TimerFragment();
+            FragmentReplaceEvent fragmentReplaceEvent = new FragmentReplaceEvent(timerFragment, true);
+            EventBus.getDefault().post(fragmentReplaceEvent);
+            TimerCommandEvent event = new TimerCommandEvent(TimerCommand.START_TIMER);
+            EventBus.getDefault().post(event);
+        }
+        else if(taskClickEvent.getTaskClick()==TaskClick.TASK_CLICK){
+            TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
+            taskDetailFragment.setTitle("Edit task");
+
+            taskDetailFragment.setTask(taskClickEvent.getTask());
+
+            //TODO: Make TaskActivity and Fragment independent
+            EventBus.getDefault().post(new FragmentReplaceEvent(taskDetailFragment, true));
+
+            viewClick = 0;
+        }
+        else if(taskClickEvent.getTaskClick()==TaskClick.DELETE_TASK){
+            final AlertDialog.Builder deleteAD = new AlertDialog.Builder(getActivity());
+            deleteAD.setMessage("Delete this task?");
+            deleteAD.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(((MainActivity)getActivity()).isOnline()) {
+                        deleteTask(taskClickEvent.getTask());
+                        taskAdapter.notifyDataSetChanged();
+
+                    }
+                }
+
+            });
+            deleteAD.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteAD.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            getActivity().onBackPressed();
+                        }
+                    });
+                }
+            });
+            deleteAD.show();
+
+        }
     }
 
     private void getAllTask(){
@@ -234,7 +292,7 @@ public class TaskFragment extends Fragment{
         TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
         taskDetailFragment.setTitle("Add new task");
 
-        fragmentReplaceListener.replaceFragment(taskDetailFragment, true);
+        EventBus.getDefault().post(new FragmentReplaceEvent(taskDetailFragment, true));
 
         viewClick = 1;
 
@@ -245,8 +303,9 @@ public class TaskFragment extends Fragment{
     }
 
 
-
-
-
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
 }

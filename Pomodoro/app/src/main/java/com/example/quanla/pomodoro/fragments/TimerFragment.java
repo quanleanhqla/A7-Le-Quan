@@ -55,7 +55,7 @@ public class TimerFragment extends Fragment {
         EventBus.getDefault().register(this);
         View view = inflater.inflate(R.layout.fragment_timer, container, false);
         setupUI(view);
-        dpTimer.setMax(10000);
+        dpTimer.setMax(10);
 
         btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,12 +92,13 @@ public class TimerFragment extends Fragment {
 
     @Subscribe
     public void onCountDown(TickEvent tickEvent){
-        dpTimer.setText("" + tickEvent.getMili()/1000);
-        dpTimer.setProgress(tickEvent.getMili());
-        if(tickEvent.getMili()==0){
+        dpTimer.setText("" + (tickEvent.getMili()/1000-1));
+        dpTimer.setProgress((tickEvent.getMili()/1000-1));
+        if(tickEvent.getMili()/1000 == 1){
             dpTimer.setText("Done");
             dpTimer.setProgress(0);
         }
     }
+
 
 }

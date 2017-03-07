@@ -10,6 +10,10 @@ import com.example.quanla.pomodoro.R;
 import com.example.quanla.pomodoro.adapters.viewholders.TaskViewHolder;
 import com.example.quanla.pomodoro.databases.DbContext;
 import com.example.quanla.pomodoro.databases.models.Task;
+import com.example.quanla.pomodoro.events.TaskClick;
+import com.example.quanla.pomodoro.events.TaskClickEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import static android.content.ContentValues.TAG;
 
@@ -20,38 +24,6 @@ import static android.content.ContentValues.TAG;
 public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
 
     private final static String TAG = "Fix";
-
-
-
-    public interface IconClickListener{
-        void onIconClickListener(View v);
-    }
-
-    private IconClickListener iconClickListener;
-
-    public interface TaskItemClickListener{
-        void onItemClick(Task task);
-    }
-
-    public interface TaskItemLongClickListener{
-        void onItemLongClick(Task task);
-    }
-
-    public void setIconClickListener(IconClickListener iconClickListener) {
-        this.iconClickListener = iconClickListener;
-    }
-
-    private TaskItemLongClickListener taskItemLongClickListener;
-
-    public void setTaskItemLongClickListener(TaskItemLongClickListener taskItemLongClickListener) {
-        this.taskItemLongClickListener = taskItemLongClickListener;
-    }
-
-    private TaskItemClickListener taskItemClickListener;
-
-    public void setTaskItemClickListener(TaskItemClickListener taskItemClickListener) {
-        this.taskItemClickListener = taskItemClickListener;
-    }
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -75,9 +47,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(taskItemLongClickListener!=null){
-                    taskItemLongClickListener.onItemLongClick(task);
-                }
+//                if(taskItemLongClickListener!=null){
+//                    taskItemLongClickListener.onItemLongClick(task);
+//                }
+                TaskClickEvent taskClickEvent = new TaskClickEvent(task, TaskClick.DELETE_TASK);
+                EventBus.getDefault().post(taskClickEvent);
                 notifyDataSetChanged();
                 return false;
             }
@@ -88,20 +62,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
             @Override
             public void onClick(View v) {
                 //send event to outside
-                if(taskItemClickListener != null){
-                    taskItemClickListener.onItemClick(task);
-                }
+//                if(taskItemClickListener != null){
+//                    taskItemClickListener.onItemClick(task);
+//                }
+                TaskClickEvent taskClickEvent = new TaskClickEvent(task, TaskClick.TASK_CLICK);
+                EventBus.getDefault().post(taskClickEvent);
                 notifyDataSetChanged();
             }
         });
         holder.getIvPlay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(iconClickListener != null){
-                    iconClickListener.onIconClickListener(holder.getIvPlay());
-                }
+//                if(iconClickListener != null){
+//                    iconClickListener.onIconClickListener(holder.getIvPlay());
+//                }
+                TaskClickEvent taskClickEvent = new TaskClickEvent(TaskClick.PLAY_TIMER);
+                EventBus.getDefault().post(taskClickEvent);
             }
         });
+
+
         holder.getvTaskColor().setOnClickListener(new View.OnClickListener() {
             int check = -1;
             @Override
